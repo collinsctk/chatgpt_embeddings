@@ -30,9 +30,10 @@ def get_query_similarity(input_query: str, df: pd.DataFrame):
     
     Return the list of document sections, sorted by relevance in descending order.
     """
-
+    # 获取输入input_query的embedding向量
     query_embedding = get_embedding(input_query)
 
+    # 算每一行的embedding向量和输入input_query的embedding向量的相似度
     df['similarities'] = df['embeddings'].apply(lambda x: vector_similarity(query_embedding, x))
     # print(df)
     """
@@ -85,6 +86,7 @@ def _decorate_query(input_query: str, df: pd.DataFrame) -> str:
 def decorate_query(input_query: str, filepath) -> str:
     try:
         df = pd.read_csv(filepath)
+        # 如果df为空，那么就返回input_query
         if df.empty:
             return input_query
         else:
@@ -103,6 +105,7 @@ def decorate_query(input_query: str, filepath) -> str:
                 2           当有人问：你们公司有多少人, 请回答：亁颐堂有三十多个人  [-0.004695456940680742, -0.011140977963805199,...
                 3  当有人问：你们公司有多少个分部, 请回答：亁颐堂有北京 上海和南京三个分部  [0.0038718082942068577, -0.003343536052852869,...
                 """
+                # df默认读出的embeddings是字符串，需要转换成list
                 df['embeddings'] = df['embeddings'].apply(lambda x: ast.literal_eval(x))
 
                 return _decorate_query(input_query, df)
