@@ -114,7 +114,8 @@ def decorate_query(query: str, open_ai_api_key, filename='foodsembeddings.csv')-
 
 
 if __name__ == '__main__':
-    query = '亁颐堂是做什么的'
+    query = '谁发现了牛顿三大定律'  # 不相关的就直接返回问题
+    # query = '亁颐堂是做什么的'   # 找到相关内容, 就添加上下文
     print(decorate_query(query, api_key, filename=csv_file_path))\
     # 产生问题
     """
