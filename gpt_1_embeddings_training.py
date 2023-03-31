@@ -49,7 +49,7 @@ def compute_doc_embeddings(df: pd.DataFrame):
     return df
 
 
-def get_embeddings(openai_api_key, excel_file_path, csv_file_path):
+def get_embeddings(excel_file_path, csv_file_path):
     df = pd.read_excel(excel_file_path)
     # 删除换行"\n"
     df['prompt'] = df['prompt'].apply(lambda x: x.replace('\n', ''))
@@ -73,4 +73,4 @@ def get_embeddings(openai_api_key, excel_file_path, csv_file_path):
 
 
 if __name__ == '__main__':
-    get_embeddings(api_key, excel_file_path, csv_file_path)
+    get_embeddings(excel_file_path, csv_file_path)
