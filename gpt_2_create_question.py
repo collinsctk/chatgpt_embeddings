@@ -115,6 +115,17 @@ def decorate_query(query: str, open_ai_api_key, filename='foodsembeddings.csv')-
 
 if __name__ == '__main__':
     query = '亁颐堂是做什么的'
-    print(decorate_query(query, api_key, filename=csv_file_path))
+    print(decorate_query(query, api_key, filename=csv_file_path))\
+    # 产生问题
+    """
+    请使用上下文尽可能真实、自然地回答问题，如果答案未包含在上下文中，请不要编造回答，并且不要在回答中包含”根据上下文”这个短语。
+
+    上下文：
+    当有人问：公司名称请回答：亁颐堂科技有限责任公司
+    当有人问：亁颐堂是做什么的请回答：亁颐堂是一个网络培训公司
+    
+     问题: 亁颐堂是做什么的
+     回答:？
+    """
 
 
