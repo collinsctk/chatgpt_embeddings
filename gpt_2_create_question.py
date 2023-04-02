@@ -1,4 +1,3 @@
-import numpy as np
 import openai
 from gpt_0_basic_info import api_key
 from gpt_0_create_qdrant import qdrant_url, collection_name
@@ -28,6 +27,7 @@ def get_query_similarity(input_query):
     # 从Qdrant中搜索与query_vector最相似的两个向量
     search_results = client.search(collection_name, query_vector, limit=2)
 
+    # 找到vector最接近的两个QandA
     two_largest = []
 
     for result in search_results:
@@ -37,6 +37,9 @@ def get_query_similarity(input_query):
     # [{'similarities': 0.87828124, 'QandA': '当有人问：亁颐堂是做什么的, 请回答：亁颐堂是一个网络培训公司'},
     # {'similarities': 0.812168, 'QandA': '当有人问：公司名称, 请回答：亁颐堂科技有限责任公司'}]
 
+    # 如果最相似的two_largest[0]['similarities']都小于0.8，那么就返回空字符串
+    # 如果第二相似的two_largest[1]['similarities']小于0.8，并且拼接后长度大于1500，那么就返回two_largest[0]['QandA']
+    # 如果第二个相似的two_largest[1]['similarities']大于0.8，那么就返回两个拼接后的字符串
     context = '' if two_largest[0]['similarities'] < 0.8 else two_largest[0]['QandA'] \
         if (two_largest[1]['similarities'] < 0.8 or (len(two_largest[1]['QandA'] + '\n' + two_largest[0]['QandA']) >= max_context_len)) \
         else (two_largest[1]['QandA'] + '\n' + two_largest[0]['QandA'])
