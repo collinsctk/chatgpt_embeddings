@@ -1,6 +1,6 @@
 import openai
 from gpt_2_create_question import decorate_query
-from gpt_0_basic_info import api_key, csv_file_path
+from gpt_0_basic_info import api_key
 openai.api_key = api_key
 
 
@@ -28,8 +28,9 @@ def question(input_query):
 
 
 if __name__ == '__main__':
-    query = '亁颐堂是做什么的'
-    new_query = decorate_query(query, filepath=csv_file_path)
+    # query = '亁颐堂是做什么的'
+    query = '现任明教教主是培训什么的?'
+    new_query = decorate_query(query)
     print(new_query)
     # 产生如下的问题：
     """

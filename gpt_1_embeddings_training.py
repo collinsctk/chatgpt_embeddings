@@ -2,7 +2,11 @@
 # https://github.com/openai/openai-cookbook/blob/main/examples/Question_answering_using_embeddings.ipynb
 import openai
 import pandas as pd
-from gpt_0_basic_info import api_key, excel_file_path, csv_file_path
+from gpt_0_basic_info import api_key
+from gpt_0_create_qdrant import qdrant_url, collection_name
+from qdrant_client import QdrantClient
+
+client = QdrantClient(qdrant_url)
 
 EMBEDDING_MODEL = "text-embedding-ada-002"
 
@@ -49,7 +53,7 @@ def compute_doc_embeddings(df: pd.DataFrame):
     return df
 
 
-def get_embeddings(excel_file_path, csv_file_path):
+def get_embeddings(excel_file_path):
     df = pd.read_excel(excel_file_path)
     # 删除换行"\n"
     df['prompt'] = df['prompt'].apply(lambda x: x.replace('\n', ''))
@@ -69,8 +73,30 @@ def get_embeddings(excel_file_path, csv_file_path):
     2           当有人问：你们公司有多少人, 请回答：亁颐堂有三十多个人  [-0.004638118669390678, -0.011072063818573952,...
     3  当有人问：你们公司有多少个分部, 请回答：亁颐堂有北京 上海和南京三个分部  [0.0038256149273365736, -0.0033990885131061077...
     """
-    df.to_csv(csv_file_path, index=False, encoding='utf-8_sig')
+    return df
+
+
+def write_df_to_qdrant(df):
+    """
+    Write a dataframe to Qdrant
+    """
+    vectors = []
+    for i, row in df.iterrows():
+        vector_dict = {
+            "id": i,
+            "vector": row["embeddings"],
+            "payload": {"QandA": row["QandA"]}
+        }
+        vectors.append(vector_dict)
+
+    client.upsert(collection_name, vectors)
 
 
 if __name__ == '__main__':
-    get_embeddings(excel_file_path, csv_file_path)
+    from gpt_0_basic_info import excel_file_dir
+
+    # train_file = f'{excel_file_dir}qa.xlsx'
+    train_file = f'{excel_file_dir}qa-4-2.xlsx'
+    write_df_to_qdrant(get_embeddings(train_file))
+
+
